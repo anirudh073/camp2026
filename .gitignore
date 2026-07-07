@@ -1,0 +1,4 @@
+ncbs-neural-circuits-navigation/
+__pycache__/
+*.py[cod]
+camp-tutorials/01-open-data-exploration-v0.ipynb
