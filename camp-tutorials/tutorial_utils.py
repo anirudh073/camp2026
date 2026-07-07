@@ -1,3 +1,7 @@
+import numpy as np
+from scipy.ndimage import gaussian_filter
+
+
 EXPECTED_NWB_PATHS = {
     "position": {"neurodata_type": "SpatialSeries", "required_children": {"data", "starting_time"}},
     "units": {"neurodata_type": "Units", "required_children": {"spike_times"}},
@@ -51,3 +55,50 @@ def unit_region_from_row(units_table, row_i, electrodes_df):
         return locations.mode().iloc[0]
     except Exception:
         return "unknown"
+
+
+def compute_occupancy_map(x, y, dt, n_bins):
+    """Compute a 2D occupancy map after dropping non-finite samples."""
+    xy_valid = np.isfinite(x[:-1]) & np.isfinite(y[:-1]) & np.isfinite(dt)
+    occupancy_x = x[:-1][xy_valid]
+    occupancy_y = y[:-1][xy_valid]
+    occupancy_dt = dt[xy_valid]
+    return np.histogram2d(
+        occupancy_x,
+        occupancy_y,
+        bins=n_bins,
+        weights=occupancy_dt,
+    )
+
+
+def compute_rate_map(unit_spike_times, time, x, y, x_edges, y_edges, occupancy, min_occupancy=0.1):
+    """Compute spike counts and an unsmoothed rate map for one unit."""
+    spike_x = np.interp(unit_spike_times, time, x)
+    spike_y = np.interp(unit_spike_times, time, y)
+    spike_valid = np.isfinite(spike_x) & np.isfinite(spike_y)
+    spike_counts, _, _ = np.histogram2d(
+        spike_x[spike_valid],
+        spike_y[spike_valid],
+        bins=[x_edges, y_edges],
+    )
+    rate_map = np.full_like(occupancy, np.nan, dtype=float)
+    valid = occupancy > min_occupancy
+    rate_map[valid] = spike_counts[valid] / occupancy[valid]
+    return {
+        "spike_x": spike_x,
+        "spike_y": spike_y,
+        "spike_counts": spike_counts,
+        "rate_map": rate_map,
+    }
+
+
+def smooth_rate_map(spike_counts, occupancy, min_occupancy=0.1, smoothing_sigma=1):
+    """Smooth spike counts and occupancy separately, then divide."""
+    smoothed_spike_counts = gaussian_filter(spike_counts, sigma=smoothing_sigma)
+    smoothed_occupancy = gaussian_filter(occupancy, sigma=smoothing_sigma)
+    smoothed_rate_map = np.full_like(occupancy, np.nan, dtype=float)
+    valid_smoothed = smoothed_occupancy > min_occupancy
+    smoothed_rate_map[valid_smoothed] = (
+        smoothed_spike_counts[valid_smoothed] / smoothed_occupancy[valid_smoothed]
+    )
+    return smoothed_rate_map
