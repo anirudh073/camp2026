@@ -22,3 +22,32 @@ def check_nwb_path(h5_file, path, neurodata_type=None, required_children=None):
             return False
 
     return True
+
+
+def get_unit_row(unit_ids, unit_id):
+    """Return the row number for a unit id."""
+    matches = (unit_ids == unit_id).nonzero()[0]
+    if len(matches) == 0:
+        raise KeyError(f"unit_id {unit_id} not found")
+    return int(matches[0])
+
+
+def get_unit_spike_times(units_table, unit_ids, unit_id):
+    """Fetch spike times for one unit without materializing the full units table."""
+    return units_table["spike_times"][get_unit_row(unit_ids, unit_id)][:]
+
+
+def unit_region_from_row(units_table, row_i, electrodes_df):
+    """Infer a unit's brain region from the electrode location linked to that row."""
+    try:
+        electrodes = units_table["electrodes"][row_i]
+        if hasattr(electrodes, "columns"):
+            locations = electrodes["location"].dropna().astype(str)
+        else:
+            electrode_ids = electrodes[:]
+            locations = electrodes_df.loc[electrode_ids, "location"].dropna().astype(str)
+        if len(locations) == 0:
+            return "unknown"
+        return locations.mode().iloc[0]
+    except Exception:
+        return "unknown"
