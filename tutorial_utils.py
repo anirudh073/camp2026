@@ -71,14 +71,47 @@ def compute_occupancy_map(x, y, dt, n_bins):
     )
 
 
+def map_spikes_to_position_frames(unit_spike_times, time, x, y):
+    """Assign spikes to tracked position samples using the position frame bins."""
+    time = np.asarray(time)
+    x = np.asarray(x)
+    y = np.asarray(y)
+    unit_spike_times = np.asarray(unit_spike_times)
+
+    if len(time) == 0:
+        return {
+            "spike_hist": np.array([], dtype=int),
+            "spike_x": np.array([], dtype=float),
+            "spike_y": np.array([], dtype=float),
+        }
+
+    if len(time) == 1:
+        spike_hist = np.array([np.sum(unit_spike_times == time[0])], dtype=int)
+    else:
+        timestep = np.median(np.diff(time))
+        bins = np.append(time, time[-1] + timestep)
+        spike_hist, _ = np.histogram(unit_spike_times, bins=bins)
+
+    spike_mask = spike_hist > 0
+    spike_x = x[spike_mask]
+    spike_y = y[spike_mask]
+    spike_valid = np.isfinite(spike_x) & np.isfinite(spike_y)
+
+    return {
+        "spike_hist": spike_hist,
+        "spike_x": spike_x[spike_valid],
+        "spike_y": spike_y[spike_valid],
+    }
+
+
 def compute_rate_map(unit_spike_times, time, x, y, x_edges, y_edges, occupancy, min_occupancy=0.1):
     """Compute spike counts and an unsmoothed rate map for one unit."""
-    spike_x = np.interp(unit_spike_times, time, x)
-    spike_y = np.interp(unit_spike_times, time, y)
-    spike_valid = np.isfinite(spike_x) & np.isfinite(spike_y)
+    spike_positions = map_spikes_to_position_frames(unit_spike_times, time, x, y)
+    spike_x = spike_positions["spike_x"]
+    spike_y = spike_positions["spike_y"]
     spike_counts, _, _ = np.histogram2d(
-        spike_x[spike_valid],
-        spike_y[spike_valid],
+        spike_x,
+        spike_y,
         bins=[x_edges, y_edges],
     )
     rate_map = np.full_like(occupancy, np.nan, dtype=float)
