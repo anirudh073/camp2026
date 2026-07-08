@@ -1,0 +1,25 @@
+name: camp2026
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - ipykernel
+  - jupyterlab
+  - pip:
+      - numpy
+      - pandas
+      - matplotlib
+      - pillow
+      - seaborn
+      - dandi
+      - pynwb
+      - remfile
+      - h5py
+      - h5glance
+      - plotly
+      - ipywidgets
+      - scipy
+      - scikit-learn
+      - track-linearization
+      - ipympl

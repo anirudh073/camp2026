@@ -7,3 +7,4 @@ camp-tutorials/V2_NOTEBOOK_PLAN.md
 AGENTS.md
 CLAUDE.md
 .claude/
+condaenv.*.requirements.txt
