@@ -4,17 +4,17 @@ Working materials for the CAMP tutorials on open neuroscience data, NWB/DANDI, h
 
 ## Install
 
-These notebooks use [uv](https://docs.astral.sh/uv/) to manage Python and dependencies — no prior Python or Linux experience needed.
+These notebooks use the package manager [uv](https://docs.astral.sh/uv/) to manage Python and dependencies.
 
 1. Install uv (one-time, pick your OS):
 
-   **macOS / Linux** — open Terminal and run:
+   **macOS / Linux** : open Terminal and run:
 
    ```bash
    curl -LsSf https://astral.sh/uv/install.sh | sh
    ```
 
-   **Windows** — open PowerShell and run:
+   **Windows** : open PowerShell and run:
 
    ```powershell
    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
