@@ -22,44 +22,27 @@ These notebooks use [uv](https://docs.astral.sh/uv/) to manage Python and depend
 
    Then restart your terminal. (Full instructions: [uv installation docs](https://docs.astral.sh/uv/getting-started/installation/).)
 
-2. Install git, if you don't already have it:
+2. Download the repository:
 
-   **macOS** — open Terminal and run:
-
-   ```bash
-   git --version
-   ```
-
-   If it's not installed, this prompts you to install the Xcode Command Line Tools — follow the popup.
-
-   **Windows** — download and run the installer from [git-scm.com/download/win](https://git-scm.com/download/win), keeping the default options. This also adds a "Git Bash" terminal you can use for the commands below.
-
-   **Ubuntu / Linux** — open a terminal and run:
+   Go to [github.com/anirudh073/camp2026](https://github.com/anirudh073/camp2026), click the green **Code** button, then **Download ZIP**. Unzip it, then open a terminal (macOS/Linux) or PowerShell (Windows) and `cd` into the unzipped folder, e.g.:
 
    ```bash
-   sudo apt install git
+   cd path/to/camp2026-main
    ```
 
-3. Clone the repository:
-
-   ```bash
-   git clone https://github.com/anirudh073/camp2026.git
-   cd camp2026
-   ```
-
-4. Install the dependencies (uv also downloads the right Python version automatically, no separate Python install needed):
+3. Install the dependencies (uv also downloads the right Python version automatically, no separate Python install needed):
 
    ```bash
    uv sync
    ```
 
-5. Launch Jupyter:
+4. Launch Jupyter:
 
    ```bash
    uv run jupyter lab
    ```
 
-6. Open a notebook and select the `camp2026 (uv)` kernel if your editor or Jupyter asks. If the kernel isn't listed, register it once with:
+5. Open a notebook and select the `camp2026 (uv)` kernel if your editor or Jupyter asks. If the kernel isn't listed, register it once with:
 
    ```bash
    uv run python -m ipykernel install --user --name camp2026 --display-name "camp2026 (uv)"
