@@ -8,3 +8,4 @@ AGENTS.md
 CLAUDE.md
 .claude/
 condaenv.*.requirements.txt
+.venv/

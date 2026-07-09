@@ -4,44 +4,70 @@ Working materials for the CAMP tutorials on open neuroscience data, NWB/DANDI, h
 
 ## Install
 
-These notebooks are set up to run from the shared conda environment defined in [`environment.yml`](environment.yml).
+These notebooks use [uv](https://docs.astral.sh/uv/) to manage Python and dependencies — no prior Python or Linux experience needed.
 
-1. Clone the repository:
+1. Install uv (one-time, pick your OS):
+
+   **macOS / Linux** — open Terminal and run:
+
+   ```bash
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   ```
+
+   **Windows** — open PowerShell and run:
+
+   ```powershell
+   powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+   ```
+
+   Then restart your terminal. (Full instructions: [uv installation docs](https://docs.astral.sh/uv/getting-started/installation/).)
+
+2. Install git, if you don't already have it:
+
+   **macOS** — open Terminal and run:
+
+   ```bash
+   git --version
+   ```
+
+   If it's not installed, this prompts you to install the Xcode Command Line Tools — follow the popup.
+
+   **Windows** — download and run the installer from [git-scm.com/download/win](https://git-scm.com/download/win), keeping the default options. This also adds a "Git Bash" terminal you can use for the commands below.
+
+   **Ubuntu / Linux** — open a terminal and run:
+
+   ```bash
+   sudo apt install git
+   ```
+
+3. Clone the repository:
 
    ```bash
    git clone https://github.com/anirudh073/camp2026.git
    cd camp2026
    ```
 
-2. Create the environment:
+4. Install the dependencies (uv also downloads the right Python version automatically, no separate Python install needed):
 
    ```bash
-   conda env create -f environment.yml
+   uv sync
    ```
 
-   If you already have the environment and want to refresh it after updates:
+5. Launch Jupyter:
 
    ```bash
-   conda env update -n camp2026 -f environment.yml --prune
+   uv run jupyter lab
    ```
 
-3. Activate it:
+6. Open a notebook and select the `camp2026 (uv)` kernel if your editor or Jupyter asks. If the kernel isn't listed, register it once with:
 
    ```bash
-   conda activate camp2026
+   uv run python -m ipykernel install --user --name camp2026 --display-name "camp2026 (uv)"
    ```
-
-4. Launch Jupyter:
-
-   ```bash
-   jupyter lab
-   ```
-
-5. Open a notebook and select the `camp2026` Python environment or kernel if your editor asks.
 
 ### Requirements
 
-- Install a conda-compatible distribution first, such as Miniforge, Mambaforge, Anaconda, or Miniconda.
+- No pre-installed Python, conda, or Linux experience needed — uv handles everything above.
 - The notebooks stream NWB files from DANDI, so an internet connection is required while running them.
 - No local dataset download is required for the tutorial notebooks.
 
