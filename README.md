@@ -71,8 +71,13 @@ These notebooks use [uv](https://docs.astral.sh/uv/) to manage Python and depend
 - The notebooks stream NWB files from DANDI, so an internet connection is required while running them.
 - No local dataset download is required for the tutorial notebooks.
 
+### If streaming doesn't work
+
+[`01-open-data-exploration-local.ipynb`](01-open-data-exploration-local.ipynb) is an offline fallback copy of the open-data-exploration notebook. It reads the NWB file from a local copy ([`sub-Lovelace_ses-Lovelace-DY01-g1_behavior+ecephys.nwb`](sub-Lovelace_ses-Lovelace-DY01-g1_behavior+ecephys.nwb), included in this repository) instead of streaming it from DANDI. Use it if DANDI streaming is slow or unavailable on your network.
+
 ## Tutorial Notebooks
 
 | Tutorial | Notebook | Colab |
 | --- | --- | --- |
 | Open data exploration with DANDI and NWB | [`01-open-data-exploration.ipynb`](01-open-data-exploration.ipynb) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anirudh073/camp2026/blob/main/01-open-data-exploration.ipynb) |
+| Open data exploration (offline fallback, local NWB file) | [`01-open-data-exploration-local.ipynb`](01-open-data-exploration-local.ipynb) | — |
