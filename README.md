@@ -2,6 +2,8 @@
 
 Working materials for the CAMP tutorials on open neuroscience data, NWB/DANDI, hippocampal spatial coding, theta-related analyses, and position decoding.
 
+These tutorials were inspired by course material developed by Eric Denovellis, UCSF. Course material: https://github.com/edeno/ncbs-neural-circuits-navigation 
+
 ## Tutorial Notebooks
 
 The Colab badge opens the participant version of the notebook, with exercise answers left blank.
