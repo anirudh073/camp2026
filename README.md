@@ -2,6 +2,17 @@
 
 Working materials for the CAMP tutorials on open neuroscience data, NWB/DANDI, hippocampal spatial coding, theta-related analyses, and position decoding.
 
+## Tutorial Notebooks
+
+The Colab badge opens the participant version of the notebook, with exercise answers left blank.
+
+| Tutorial | Notebook | Colab |
+| --- | --- | --- |
+| Open data exploration with DANDI and NWB | [`01-open-data-exploration.ipynb`](01-open-data-exploration.ipynb) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anirudh073/camp2026/blob/main/01-open-data-exploration.ipynb) |
+| Open data exploration (offline fallback, local NWB file) | [`01-open-data-exploration-local.ipynb`](01-open-data-exploration-local.ipynb) | — |
+
+Solved reference copies are available as [`01-open-data-exploration-solved.ipynb`](01-open-data-exploration-solved.ipynb) and [`01-open-data-exploration-local-solved.ipynb`](01-open-data-exploration-local-solved.ipynb). For the streamed solved copy, this is the Colab link: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anirudh073/camp2026/blob/main/01-open-data-exploration-solved.ipynb)
+
 ## Install
 
 These notebooks use the package manager [uv](https://docs.astral.sh/uv/) to manage Python and dependencies.
@@ -57,14 +68,3 @@ These notebooks use the package manager [uv](https://docs.astral.sh/uv/) to mana
 ### If streaming doesn't work
 
 [`01-open-data-exploration-local.ipynb`](01-open-data-exploration-local.ipynb) is an offline fallback copy of the open-data-exploration notebook. It reads the NWB file from a local copy ([`sub-Lovelace_ses-Lovelace-DY01-g1_behavior+ecephys.nwb`](sub-Lovelace_ses-Lovelace-DY01-g1_behavior+ecephys.nwb), included in this repository) instead of streaming it from DANDI. Use it if DANDI streaming is slow or unavailable on your network.
-
-## Tutorial Notebooks
-
-The Colab badge opens the participant version of the notebook, with exercise answers left blank.
-
-| Tutorial | Notebook | Colab |
-| --- | --- | --- |
-| Open data exploration with DANDI and NWB | [`01-open-data-exploration.ipynb`](01-open-data-exploration.ipynb) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anirudh073/camp2026/blob/main/01-open-data-exploration.ipynb) |
-| Open data exploration (offline fallback, local NWB file) | [`01-open-data-exploration-local.ipynb`](01-open-data-exploration-local.ipynb) | — |
-
-Solved reference copies are available as [`01-open-data-exploration-solved.ipynb`](01-open-data-exploration-solved.ipynb) and [`01-open-data-exploration-local-solved.ipynb`](01-open-data-exploration-local-solved.ipynb). For the streamed solved copy, this is the Colab link: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anirudh073/camp2026/blob/main/01-open-data-exploration-solved.ipynb)
