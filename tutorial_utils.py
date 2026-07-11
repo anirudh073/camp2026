@@ -933,44 +933,33 @@ def plot_posterior_segment_stacked_layout(
 
 def _downsample_posterior_for_plotly(
     window_times,
-    true_positions,
-    decoded_positions,
     plot_posterior,
     max_time_bins=2000,
 ):
-    """Reduce time resolution for interactive plotting while preserving posterior peaks."""
+    """Reduce the posterior heatmap's time resolution while preserving posterior peaks.
+
+    Only the heatmap is downsampled here. Position markers stay at full resolution
+    since Scattergl (WebGL) renders hundreds of thousands of points without lag -
+    the heatmap, not the position trace, is what makes the figure heavy.
+    """
     n_time = len(window_times)
     if n_time == 0:
-        return window_times, true_positions, decoded_positions, plot_posterior, 1
+        return window_times, plot_posterior, 1
 
     block_size = max(1, int(np.ceil(n_time / max_time_bins)))
     if block_size == 1:
-        return window_times, true_positions, decoded_positions, plot_posterior, block_size
+        return window_times, plot_posterior, block_size
 
     downsampled_times = []
-    downsampled_true_positions = []
-    downsampled_decoded_positions = []
     downsampled_posterior = []
 
     for start_ind in range(0, n_time, block_size):
         stop_ind = min(start_ind + block_size, n_time)
         downsampled_times.append(np.nanmean(window_times[start_ind:stop_ind]))
-        downsampled_true_positions.append(np.nanmean(true_positions[start_ind:stop_ind]))
-        if decoded_positions is None:
-            downsampled_decoded_positions.append(np.nan)
-        else:
-            downsampled_decoded_positions.append(np.nanmean(decoded_positions[start_ind:stop_ind]))
         downsampled_posterior.append(np.nanmax(plot_posterior[start_ind:stop_ind], axis=0))
-
-    if decoded_positions is None:
-        downsampled_decoded_positions = None
-    else:
-        downsampled_decoded_positions = np.asarray(downsampled_decoded_positions)
 
     return (
         np.asarray(downsampled_times),
-        np.asarray(downsampled_true_positions),
-        downsampled_decoded_positions,
         np.vstack(downsampled_posterior),
         block_size,
     )
@@ -999,30 +988,27 @@ def _plot_posterior_layout_plotly(
     window_position_edges = centers_to_edges(plot_positions)
 
     (
-        plot_times,
-        plot_true_positions,
-        plot_decoded_positions,
-        plot_posterior,
+        heatmap_times,
+        heatmap_posterior,
         plot_block_size,
     ) = _downsample_posterior_for_plotly(
         window_times,
-        true_positions,
-        decoded_positions,
         plot_posterior,
         max_time_bins=max_plot_time_bins,
     )
     if plot_block_size > 1:
         print(
-            f"Plotly display downsampled by {plot_block_size}x "
-            f"({len(window_times)} -> {len(plot_times)} time bins) for responsiveness."
+            f"Posterior heatmap downsampled by {plot_block_size}x "
+            f"({len(window_times)} -> {len(heatmap_times)} time bins) for responsiveness. "
+            f"Position markers below are still plotted at full resolution ({len(window_times)} samples)."
         )
 
     fig = go.Figure()
     fig.add_trace(
         go.Heatmap(
-            x=plot_times,
+            x=heatmap_times,
             y=plot_positions,
-            z=plot_posterior.T,
+            z=heatmap_posterior.T,
             colorscale="Greys",
             zmin=0.0,
             colorbar=dict(title="posterior probability"),
@@ -1032,22 +1018,22 @@ def _plot_posterior_layout_plotly(
 
     fig.add_trace(
         go.Scattergl(
-            x=plot_times,
-            y=plot_true_positions,
+            x=window_times,
+            y=true_positions,
             mode="markers",
-            marker=dict(color=COLORS["magenta"], size=4, opacity=0.8),
+            marker=dict(color=COLORS["magenta"], size=3, opacity=0.6),
             name="True position",
             hovertemplate="time=%{x:.3f} s<br>true position=%{y:.2f} cm<extra></extra>",
         )
     )
 
-    if plot_decoded_positions is not None and decoded_label is not None:
+    if decoded_positions is not None and decoded_label is not None:
         fig.add_trace(
             go.Scattergl(
-                x=plot_times,
-                y=plot_decoded_positions,
+                x=window_times,
+                y=decoded_positions,
                 mode="markers",
-                marker=dict(color=COLORS["orange"], size=5, opacity=0.85),
+                marker=dict(color=COLORS["orange"], size=4, opacity=0.6),
                 name=decoded_label,
                 hovertemplate="time=%{x:.3f} s<br>decoded position=%{y:.2f} cm<extra></extra>",
             )
