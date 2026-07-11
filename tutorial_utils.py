@@ -848,7 +848,7 @@ def _plot_posterior_layout(
         window_times,
         true_positions,
         color=COLORS["magenta"],
-        s=10,
+        s=2.5,
         alpha=0.9,
         label="True position",
     )
@@ -1003,6 +1003,18 @@ def _plot_posterior_layout_plotly(
             f"Position markers below are still plotted at full resolution ({len(window_times)} samples)."
         )
 
+    finite_posterior = heatmap_posterior[np.isfinite(heatmap_posterior)]
+    if finite_posterior.size == 0:
+        raise ValueError("No finite posterior values are available for plotting.")
+
+    # Match Matplotlib's higher contrast more closely by clipping the top of the
+    # color scale to where most posterior values lie instead of stretching all
+    # the way to rare peaks.
+    posterior_color_max = float(np.nanquantile(finite_posterior, 0.995))
+    if not np.isfinite(posterior_color_max) or posterior_color_max <= 0:
+        posterior_color_max = float(np.nanmax(finite_posterior))
+    posterior_color_max = max(posterior_color_max, 1e-6)
+
     fig = go.Figure()
     fig.add_trace(
         go.Heatmap(
@@ -1011,6 +1023,7 @@ def _plot_posterior_layout_plotly(
             z=heatmap_posterior.T,
             colorscale="Greys",
             zmin=0.0,
+            zmax=posterior_color_max,
             colorbar=dict(title="posterior probability"),
             hovertemplate="time=%{x:.3f} s<br>position=%{y:.2f} cm<br>posterior=%{z:.4f}<extra></extra>",
         )
@@ -1021,7 +1034,7 @@ def _plot_posterior_layout_plotly(
             x=window_times,
             y=true_positions,
             mode="markers",
-            marker=dict(color=COLORS["magenta"], size=3, opacity=0.6),
+            marker=dict(color=COLORS["magenta"], size=2.25, opacity=0.6),
             name="True position",
             hovertemplate="time=%{x:.3f} s<br>true position=%{y:.2f} cm<extra></extra>",
         )
