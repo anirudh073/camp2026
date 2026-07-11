@@ -1003,13 +1003,13 @@ def _plot_posterior_layout_plotly(
             f"Position markers below are still plotted at full resolution ({len(window_times)} samples)."
         )
 
-    finite_posterior = heatmap_posterior[np.isfinite(heatmap_posterior)]
+    finite_posterior = plot_posterior[np.isfinite(plot_posterior)]
     if finite_posterior.size == 0:
         raise ValueError("No finite posterior values are available for plotting.")
 
-    # Match Matplotlib's higher contrast more closely by clipping the top of the
-    # color scale to where most posterior values lie instead of stretching all
-    # the way to rare peaks.
+    # Compute the color cap from the original full-resolution posterior, not the
+    # downsampled max-pooled heatmap. Otherwise large downsampling factors can
+    # push the cap too close to the absolute maximum and wash out contrast.
     posterior_color_max = float(np.nanquantile(finite_posterior, 0.995))
     if not np.isfinite(posterior_color_max) or posterior_color_max <= 0:
         posterior_color_max = float(np.nanmax(finite_posterior))
